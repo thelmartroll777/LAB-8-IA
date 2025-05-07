@@ -69,9 +69,18 @@ model.names
 
 
 # Definimos una lista de nombres con todas las clases para identificar objetos detectados
-classNames = [ "bird", "cat",
-              "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe"
-              ] # Aquí se enumeran todas las clases
+classNames = {
+    14: "bird",
+    15: "cat",
+    16: "dog",
+    17: "horse",
+    18: "sheep",
+    19: "cow",
+    20: "elephant",
+    21: "bear",
+    22: "zebra",
+    23: "giraffe"
+} # Aquí se enumeran todas las clases
 
 
 # In[6]:
@@ -110,15 +119,12 @@ while True:
 
             # Obtenemos el nombre de la clase detectada
             cls = int(box.cls[0])
-            print("Class name -->", classNames[cls])
-
-            # Mostramos el nombre de la clase junto a la caja delimitadora
-            org = [x1, y1]
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 1
-            color = (255, 0, 0) # Color: Azul (formato BGR)
-            thickness = 1
-            cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
+            
+            if cls in classNames:
+                nombre = classNames[cls]
+                print("Class name -->", nombre)
+            
+                cv2.putText(img, nombre, org, font, fontScale, color, thickness)
 
     # Mostramos la imagen con las detecciones
     cv2.imshow('Webcam', img)
