@@ -29,7 +29,7 @@
 
 
 # Instalamos las librerías necesarias
-get_ipython().run_line_magic('pip', 'install opencv-python ultralytics')
+#get_ipython().run_line_magic('pip', 'install opencv-python ultralytics')
 
 
 # Importamos las siguientes bibliotecas en Python:
