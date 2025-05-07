@@ -69,20 +69,9 @@ model.names
 
 
 # Definimos una lista de nombres con todas las clases para identificar objetos detectados
-classNames = {
-    14: "bird",
-    15: "cat",
-    16: "dog",
-    17: "horse",
-    18: "sheep",
-    19: "cow",
-    20: "elephant",
-    21: "bear",
-    22: "zebra",
-    23: "giraffe"
-} # Aquí se enumeran todas las clases
-
-
+allowed_classes = ["bird", "cat",
+              "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe"
+              ] # Aquí se enumeran todas las clases
 # In[6]:
 
 
@@ -94,13 +83,14 @@ captura.set(cv2.CAP_PROP_FRAME_WIDTH, 640) # Ancho de la imagen
 captura.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # Alto de la imagen
 
 # Iniciamos un bucle para procesar los fotogramas de la cámara
+# Iniciamos un bucle para procesar los fotogramas de la cámara
 while True:
-    success, img = captura.read() # Capturamos un fotograma
+    success, img = captura.read()
 
-    # Realizamos la detección de objetos en la imagen capturada (usando el modelo de YOLO pre-entrenado que cargamos anteriormente)
+    # Realizamos la detección de objetos
     results = model(img, stream=True)
 
-   # Procesamos los resultados de la detección
+    # Procesamos los resultados de la detección
     for r in results:
         boxes = r.boxes
 
@@ -108,29 +98,29 @@ while True:
         for box in boxes:
             # Obtenemos las coordenadas de la caja delimitadora
             x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # Convertimos a valores enteros
-
-            # Dibujamos la caja delimitadora en la imagen
-            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 1)
+            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
 
             # Obtenemos la confianza de la detección
-            confidence = math.ceil((box.conf[0]*100))/100
-            print("Confidence --->",confidence)
+            confidence = math.ceil((box.conf[0] * 100)) / 100
 
             # Obtenemos el nombre de la clase detectada
             cls = int(box.cls[0])
-            
-            if cls in classNames:
-                nombre = classNames[cls]
-                print("Class name -->", nombre)
-            
-                cv2.putText(img, nombre, org, font, fontScale, color, thickness)
+            class_name = model.names[cls]  # Obtén el nombre de la clase directamente del modelo
 
-    # Mostramos la imagen con las detecciones
-    cv2.imshow('Webcam', img)
+            # Verificamos si la clase detectada está en la lista de clases permitidas
+            if class_name in allowed_classes:
+                # Dibujamos la caja delimitadora
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 1)
+
+                # Mostramos la clase detectada
+                cv2.putText(img, class_name, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
+
+
+
+      # Mostramos la imagen con las detecciones
+    cv2.imshow('Webcam', img) 
 
     # Salimos del bucle si se presiona la tecla 'q'
-    #if cv2.waitKey(1) == ord('q'):
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
